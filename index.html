@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Cak Kapit</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -12,7 +14,6 @@
             --light: #f4f7f6;
             --danger: #e74c3c;
             --success: #27ae60;
-            --admin-gold: #f1c40f;
         }
 
         body {
@@ -110,9 +111,6 @@
             color: var(--primary);
         }
 
-        .btn-dapur { border-color: #ffeaa7; }
-        .btn-dapur i { color: #d35400; }
-
         .btn-main:hover {
             border-color: var(--primary);
             background: #fff9f4;
@@ -192,10 +190,23 @@
     </div>
 
     <script>
-        // KONFIGURASI PASSWORD ADMIN
-        const PASS_ADMIN = "1973";
+        // 1. KONFIGURASI FIREBASE (Gunakan URL yang sama dengan Dapur Live)
+        const firebaseConfig = {
+            databaseURL: "https://warungdigital-97318-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-        function updateStatus() {
+        const PASS_ADMIN = "1973";
+        let currentManualStatus = 'auto'; // Default
+
+        // 2. MENDENGARKAN PERUBAHAN STATUS DARI DATABASE (Realtime)
+        db.ref('warungStatus').on('value', (snapshot) => {
+            currentManualStatus = snapshot.val() || 'auto';
+            updateDisplay();
+        });
+
+        function updateDisplay() {
             const now = new Date();
             const hours = now.getHours();
             const clockElement = document.getElementById('clock');
@@ -203,9 +214,7 @@
             
             clockElement.innerText = now.toLocaleTimeString('id-ID');
 
-            const manualStatus = localStorage.getItem('cakKapitStatus');
-
-            if (manualStatus === 'habis') {
+            if (currentManualStatus === 'habis') {
                 statusLabel.innerText = "Maaf, Sudah Habis";
                 statusLabel.style.background = "#e67e22";
             } else {
@@ -219,36 +228,31 @@
             }
         }
 
-        // FUNGSI SET STATUS DENGAN PASSWORD
+        // 3. MENGUBAH STATUS DI DATABASE
         function setStatusWithAuth(mode) {
             const password = prompt("Masukkan Kode Admin untuk mengubah status:");
             
             if (password === PASS_ADMIN) {
-                if (mode === 'habis') {
-                    localStorage.setItem('cakKapitStatus', 'habis');
-                    alert("Status diatur ke HABIS.");
-                } else {
-                    localStorage.removeItem('cakKapitStatus');
-                    alert("Status kembali ke OTOMATIS.");
-                }
-                updateStatus();
+                db.ref('warungStatus').set(mode)
+                .then(() => {
+                    alert("Status berhasil diperbarui di semua perangkat!");
+                });
             } else if (password !== null) {
-                alert("Kode Salah! Perubahan status gagal.");
+                alert("Kode Salah!");
             }
         }
 
-        // FUNGSI AKSES KE DAPUR LIVE
         function aksesDapur() {
             const password = prompt("Masukkan Kode Admin :");
             if (password === PASS_ADMIN) {
                 window.location.href = "https://aprisloji172000.github.io/dapur_live_dashboard/";
             } else if (password !== null) {
-                alert("Kode Salah! Hanya untuk Admin Cak Kapit.");
+                alert("Kode Salah!");
             }
         }
 
-        setInterval(updateStatus, 1000);
-        updateStatus();
+        // Jalankan jam setiap detik
+        setInterval(updateDisplay, 1000);
     </script>
 
 </body>
