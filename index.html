@@ -7,11 +7,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary: #e67e22; /* Warna khas nasi goreng */
+            --primary: #e67e22;
             --dark: #2c3e50;
             --light: #f4f7f6;
             --danger: #e74c3c;
             --success: #27ae60;
+            --admin-gold: #f1c40f;
         }
 
         body {
@@ -21,7 +22,6 @@
             color: var(--dark);
         }
 
-        /* Bagian Atas / Header */
         .header {
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1601050690597-df056fb17296?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80');
             background-size: cover;
@@ -50,7 +50,6 @@
         .header h1 { margin: 5px 0; font-size: 24px; }
         .header p { margin: 0; opacity: 0.9; }
 
-        /* Container Dashboard */
         .container {
             max-width: 500px;
             margin: -20px auto 40px;
@@ -66,7 +65,6 @@
             margin-bottom: 20px;
         }
 
-        /* Status & Jam */
         .status-badge {
             display: inline-block;
             padding: 8px 20px;
@@ -85,7 +83,6 @@
             color: var(--dark);
         }
 
-        /* Grid Tombol Utama */
         .grid-menu {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -104,6 +101,7 @@
             flex-direction: column;
             align-items: center;
             font-weight: 600;
+            cursor: pointer;
         }
 
         .btn-main i {
@@ -112,13 +110,15 @@
             color: var(--primary);
         }
 
+        .btn-dapur { border-color: #ffeaa7; }
+        .btn-dapur i { color: #d35400; }
+
         .btn-main:hover {
             border-color: var(--primary);
             background: #fff9f4;
             transform: translateY(-3px);
         }
 
-        /* Kontrol Admin (Manual Buka/Tutup) */
         .admin-panel {
             margin-top: 25px;
             background: #eee;
@@ -141,8 +141,6 @@
 
         .btn-habis { background: var(--danger); color: white; }
         .btn-auto { background: var(--dark); color: white; }
-        .btn-toggle:active { transform: scale(0.95); }
-
     </style>
 </head>
 <body>
@@ -154,6 +152,7 @@
     <p>Selamat Datang di</p>
     <h1>NASI & MIE GORENG CAK KAPIT</h1>
 </div>
+
     <div class="container">
         <div class="card">
             <div id="status-label" class="status-badge">Memuat...</div>
@@ -163,9 +162,9 @@
             </p>
 
             <div class="admin-panel">
-                <p><i class="fas fa-tools"></i> KONTROL OWNER (KLIK JIKA HABIS)</p>
-                <button class="btn-toggle btn-habis" onclick="setStatus('habis')">SET HABIS / TUTUP</button>
-                <button class="btn-toggle btn-auto" onclick="setStatus('auto')">MODE OTOMATIS</button>
+                <p><i class="fas fa-lock"></i> KONTROL OWNER (PERLU AKSES)</p>
+                <button class="btn-toggle btn-habis" onclick="setStatusWithAuth('habis')">SET HABIS / TUTUP</button>
+                <button class="btn-toggle btn-auto" onclick="setStatusWithAuth('auto')">MODE OTOMATIS</button>
             </div>
         </div>
 
@@ -175,7 +174,7 @@
                 Lihat Menu
             </a>
 
-            <a href="https://maps.app.goo.gl/QtbD7Xra8hZRxo6U6" target="_blank" class="btn-main">
+            <a href="https://www.google.com/maps" target="_blank" class="btn-main">
                 <i class="fas fa-map-marked-alt"></i>
                 Lokasi Warung
             </a>
@@ -185,54 +184,69 @@
                 Foto & Galeri
             </a>
 
-            <a href="https://wa.me/628123456789" class="btn-main">
-                <i class="fab fa-whatsapp"></i>
-                Chat Admin
-            </a>
+            <div class="btn-main btn-dapur" onclick="aksesDapur()">
+                <i class="fas fa-fire-alt"></i>
+                Dapur Live
+            </div>
         </div>
     </div>
 
     <script>
+        // KONFIGURASI PASSWORD ADMIN
+        const PASS_ADMIN = "1973";
+
         function updateStatus() {
             const now = new Date();
             const hours = now.getHours();
             const clockElement = document.getElementById('clock');
             const statusLabel = document.getElementById('status-label');
             
-            // Tampilan Jam Realtime
             clockElement.innerText = now.toLocaleTimeString('id-ID');
 
-            // Cek Status Manual di LocalStorage
             const manualStatus = localStorage.getItem('cakKapitStatus');
 
             if (manualStatus === 'habis') {
                 statusLabel.innerText = "Maaf, Sudah Habis";
-                statusLabel.style.background = "#e67e22"; // Orange tua
+                statusLabel.style.background = "#e67e22";
             } else {
-                // Logika Otomatis: Buka jam 17:00 (17) s/d jam 00:00 (23:59)
-                // Jika jam >= 17 berarti buka
                 if (hours >= 17 && hours <= 23) {
                     statusLabel.innerText = "Buka Sekarang";
-                    statusLabel.style.background = "#27ae60"; // Hijau
+                    statusLabel.style.background = "#27ae60";
                 } else {
                     statusLabel.innerText = "Warung Tutup";
-                    statusLabel.style.background = "#e74c3c"; // Merah
+                    statusLabel.style.background = "#e74c3c";
                 }
             }
         }
 
-        function setStatus(mode) {
-            if (mode === 'habis') {
-                localStorage.setItem('cakKapitStatus', 'habis');
-                alert("Status diatur ke HABIS. Pelanggan akan melihat warung tutup.");
-            } else {
-                localStorage.removeItem('cakKapitStatus');
-                alert("Status kembali ke OTOMATIS (Buka jam 17:00 - 00:00).");
+        // FUNGSI SET STATUS DENGAN PASSWORD
+        function setStatusWithAuth(mode) {
+            const password = prompt("Masukkan Kode Admin untuk mengubah status:");
+            
+            if (password === PASS_ADMIN) {
+                if (mode === 'habis') {
+                    localStorage.setItem('cakKapitStatus', 'habis');
+                    alert("Status diatur ke HABIS.");
+                } else {
+                    localStorage.removeItem('cakKapitStatus');
+                    alert("Status kembali ke OTOMATIS.");
+                }
+                updateStatus();
+            } else if (password !== null) {
+                alert("Kode Salah! Perubahan status gagal.");
             }
-            updateStatus();
         }
 
-        // Jalankan update setiap detik
+        // FUNGSI AKSES KE DAPUR LIVE
+        function aksesDapur() {
+            const password = prompt("Masukkan Kode Admin :");
+            if (password === PASS_ADMIN) {
+                window.location.href = "https://aprisloji172000.github.io/dapur_live_dashboard/";
+            } else if (password !== null) {
+                alert("Kode Salah! Hanya untuk Admin Cak Kapit.");
+            }
+        }
+
         setInterval(updateStatus, 1000);
         updateStatus();
     </script>
