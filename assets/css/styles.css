@@ -1,0 +1,153 @@
+:root {
+  --pedas: #ff1744;
+  --biasa: #00e676;
+  --bg: #f4f7f6;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --primary: #ff6b35;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: var(--bg);
+  margin: 0;
+  padding: 15px;
+  color: var(--text);
+}
+
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+.app-shell {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  background: #ddd;
+  transition: background 0.2s ease;
+}
+
+.tab-btn.active {
+  background: #333;
+  color: #fff;
+}
+
+.section {
+  display: none;
+}
+
+.section.active {
+  display: block;
+}
+
+.panel {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.field-control {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+.btn-primary,
+.btn-done {
+  width: 100%;
+  padding: 12px;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--primary);
+}
+
+.btn-done {
+  background: #2e7d32;
+}
+
+.order-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-left: 10px solid;
+  box-shadow: var(--card-shadow);
+}
+
+.order-card.PEDAS {
+  border-left-color: var(--pedas);
+}
+
+.order-card.BIASA {
+  border-left-color: var(--biasa);
+}
+
+.order-title {
+  font-weight: 700;
+}
+
+.order-rasa {
+  font-weight: 700;
+}
+
+.order-rasa.PEDAS {
+  color: #dc2626;
+}
+
+.order-rasa.BIASA {
+  color: #15803d;
+}
+
+.order-porsi {
+  margin: 8px 0;
+  font-size: 1.6rem;
+}
+
+.riwayat-item {
+  background: #eee;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  font-size: 0.85rem;
+}
+
+.empty-note {
+  text-align: center;
+  color: var(--muted);
+  padding: 20px;
+}

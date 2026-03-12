@@ -1,258 +1,70 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Cak Kapit</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #e67e22;
-            --dark: #2c3e50;
-            --light: #f4f7f6;
-            --danger: #e74c3c;
-            --success: #27ae60;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            background-color: var(--light);
-            color: var(--dark);
-        }
-
-        .header {
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1601050690597-df056fb17296?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 40px 20px;
-            text-align: center;
-            border-bottom-left-radius: 30px;
-            border-bottom-right-radius: 30px;
-        }
-
-        .logo-circle {
-            width: 90px;
-            height: 90px;
-            background: white;
-            border-radius: 50%;
-            margin: 0 auto 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            color: var(--primary);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        .header h1 { margin: 5px 0; font-size: 24px; }
-        .header p { margin: 0; opacity: 0.9; }
-
-        .container {
-            max-width: 500px;
-            margin: -20px auto 40px;
-            padding: 0 15px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 50px;
-            color: white;
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-        }
-
-        .time-live {
-            font-size: 28px;
-            font-weight: bold;
-            margin: 10px 0;
-            color: var(--dark);
-        }
-
-        .grid-menu {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .btn-main {
-            background: white;
-            border: 2px solid #eee;
-            border-radius: 15px;
-            padding: 20px 10px;
-            text-decoration: none;
-            color: var(--dark);
-            transition: 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .btn-main i {
-            font-size: 28px;
-            margin-bottom: 10px;
-            color: var(--primary);
-        }
-
-        .btn-main:hover {
-            border-color: var(--primary);
-            background: #fff9f4;
-            transform: translateY(-3px);
-        }
-
-        .admin-panel {
-            margin-top: 25px;
-            background: #eee;
-            padding: 15px;
-            border-radius: 15px;
-        }
-
-        .admin-panel p { font-size: 12px; margin-bottom: 10px; font-weight: bold; }
-
-        .btn-toggle {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 12px;
-            margin: 0 5px;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
-        .btn-habis { background: var(--danger); color: white; }
-        .btn-auto { background: var(--dark); color: white; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warung Digital - Live Dashboard</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
+  <main class="app-shell">
+    <nav class="nav-tabs" aria-label="Navigasi dashboard">
+      <button class="tab-btn active" data-tab-target="input">Input (Admin)</button>
+      <button class="tab-btn" data-tab-target="dapur">Dapur (Live)</button>
+      <button class="tab-btn" data-tab-target="history">Riwayat</button>
+    </nav>
 
-<div class="header">
-    <div class="logo-circle">
-        <img src="https://uploads.onecompiler.io/44cgbcu3p/44f268w78/logo2.png" alt="Logo Cak Kapit" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
-    </div>
-    <p>Selamat Datang di</p>
-    <h1>NASI & MIE GORENG CAK KAPIT</h1>
-</div>
+    <section id="input" class="section active" aria-labelledby="form-title">
+      <div class="panel">
+        <h2 id="form-title">Input Pesanan Baru</h2>
 
-    <div class="container">
-        <div class="card">
-            <div id="status-label" class="status-badge">Memuat...</div>
-            <div class="time-live" id="clock">00:00:00</div>
-            <p style="font-size: 14px; color: #777;">
-                <i class="far fa-calendar-alt"></i> Jam Buka: 17:00 - 00:00 WIB
-            </p>
+        <label for="m-menu">Menu</label>
+        <select id="m-menu" class="field-control">
+          <option value="Nasi Goreng">Nasi Goreng</option>
+          <option value="Mie Goreng">Mie Goreng</option>
+          <option value="Mawut">Mawut</option>
+        </select>
 
-            <div class="admin-panel">
-                <p><i class="fas fa-lock"></i> KONTROL OWNER (PERLU AKSES)</p>
-                <button class="btn-toggle btn-habis" onclick="setStatusWithAuth('habis')">SET HABIS / TUTUP</button>
-                <button class="btn-toggle btn-auto" onclick="setStatusWithAuth('auto')">MODE OTOMATIS</button>
-            </div>
-        </div>
+        <label for="m-rasa">Tingkat Pedas</label>
+        <select id="m-rasa" class="field-control">
+          <option value="BIASA">BIASA (Tidak Pedas)</option>
+          <option value="PEDAS">PEDAS</option>
+        </select>
 
-        <div class="grid-menu">
-            <a href="https://aprisloji172000.github.io/conto-pesan/" class="btn-main">
-                <i class="fas fa-utensils"></i>
-                Lihat Menu
-            </a>
+        <label for="m-qty">Jumlah Porsi</label>
+        <input
+          type="number"
+          id="m-qty"
+          min="1"
+          class="field-control"
+          placeholder="Contoh: 8"
+        >
 
-            <a href="https://maps.app.goo.gl/1o8tspGSXFZTzgms9?g_st=awb" target="_blank" class="btn-main">
-                <i class="fas fa-map-marked-alt"></i>
-                Lokasi Warung
-            </a>
-<a href="https://s.id/GaleriCakKapit" target="_blank" rel="noopener noreferrer" class="btn-main">
-    <i class="fas fa-images"></i>
-    Foto & Galeri
-</a>
+        <button id="btn-kirim" class="btn-primary">Kirim ke Dapur</button>
+      </div>
+    </section>
 
-            <div class="btn-main btn-dapur" onclick="aksesDapur()">
-                <i class="fas fa-fire-alt"></i>
-                Dapur Live
-            </div>
-        </div>
-    </div>
+    <section id="dapur" class="section" aria-labelledby="dapur-title">
+      <h2 id="dapur-title" class="section-title">
+        <i class="fas fa-fire" aria-hidden="true"></i>
+        Antrian Masak
+      </h2>
+      <div id="list-antrian"></div>
+    </section>
 
-    <script>
-        // 1. KONFIGURASI FIREBASE (Gunakan URL yang sama dengan Dapur Live)
-        const firebaseConfig = {
-            databaseURL: "https://warungdigital-97318-default-rtdb.firebaseio.com/"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+    <section id="history" class="section" aria-labelledby="riwayat-title">
+      <h2 id="riwayat-title" class="section-title">Riwayat Masak</h2>
+      <div id="list-riwayat"></div>
+    </section>
+  </main>
 
-        const PASS_ADMIN = "1973";
-        let currentManualStatus = 'auto'; // Default
-
-        // 2. MENDENGARKAN PERUBAHAN STATUS DARI DATABASE (Realtime)
-        db.ref('warungStatus').on('value', (snapshot) => {
-            currentManualStatus = snapshot.val() || 'auto';
-            updateDisplay();
-        });
-
-        function updateDisplay() {
-            const now = new Date();
-            const hours = now.getHours();
-            const clockElement = document.getElementById('clock');
-            const statusLabel = document.getElementById('status-label');
-            
-            clockElement.innerText = now.toLocaleTimeString('id-ID');
-
-            if (currentManualStatus === 'habis') {
-                statusLabel.innerText = "Maaf, Sudah Habis";
-                statusLabel.style.background = "#e67e22";
-            } else {
-                if (hours >= 17 && hours <= 23) {
-                    statusLabel.innerText = "Buka Sekarang";
-                    statusLabel.style.background = "#27ae60";
-                } else {
-                    statusLabel.innerText = "Warung Tutup";
-                    statusLabel.style.background = "#e74c3c";
-                }
-            }
-        }
-
-        // 3. MENGUBAH STATUS DI DATABASE
-        function setStatusWithAuth(mode) {
-            const password = prompt("Masukkan Kode Admin untuk mengubah status:");
-            
-            if (password === PASS_ADMIN) {
-                db.ref('warungStatus').set(mode)
-                .then(() => {
-                    alert("Status berhasil diperbarui di semua perangkat!");
-                });
-            } else if (password !== null) {
-                alert("Kode Salah!");
-            }
-        }
-
-        function aksesDapur() {
-            const password = prompt("Masukkan Kode Admin :");
-            if (password === PASS_ADMIN) {
-                window.location.href = "https://aprisloji172000.github.io/dapur_live_dashboard/";
-            } else if (password !== null) {
-                alert("Kode Salah!");
-            }
-        }
-
-        // Jalankan jam setiap detik
-        setInterval(updateDisplay, 1000);
-    </script>
-
+  <script src="assets/js/firebase-config.js"></script>
+  <script src="assets/js/app.js"></script>
 </body>
 </html>
