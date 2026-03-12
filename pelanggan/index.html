@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pelanggan | Warung Cak Kapit</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+  <header class="header-hero">
+    <div class="container">
+      <a href="../" class="btn btn-outline" style="margin-bottom:1rem;">← Kembali</a>
+      <h1>Pesan dari rumah / kantor</h1>
+      <p>Isi data, pilih menu, lalu klik kirim ke WhatsApp admin.</p>
+      <div id="statusLabel" class="status-pill">Memuat status warung...</div>
+    </div>
+  </header>
+
+  <main class="container section grid-2">
+    <section class="card">
+      <h3>Form Pelanggan</h3>
+      <label>Nama</label>
+      <input id="customerName" class="input" placeholder="Nama Anda" />
+      <label style="margin-top:.6rem;display:block;">Nomor WA</label>
+      <input id="customerPhone" class="input" placeholder="08xxxxxxxxxx" />
+      <label style="margin-top:.6rem;display:block;">Alamat/Patokan</label>
+      <textarea id="customerAddress" class="input" rows="3" placeholder="Contoh: Jl. Mawar No 10, depan minimarket"></textarea>
+      <label style="margin-top:.6rem;display:block;">Metode Ambil</label>
+      <select id="deliveryType">
+        <option value="antar">Diantar</option>
+        <option value="ambil">Ambil sendiri</option>
+      </select>
+    </section>
+
+    <section class="card">
+      <h3>Menu</h3>
+      <div id="menuContainer" class="grid-2"></div>
+    </section>
+  </main>
+
+  <section class="container section">
+    <div class="card">
+      <h3>Ringkasan Pesanan</h3>
+      <div id="orderSummary" class="muted">Belum ada item dipilih.</div>
+      <h2 id="totalPrice">Total: Rp0</h2>
+      <button id="submitOrderBtn" class="btn btn-primary">Kirim Pesanan ke WhatsApp Admin</button>
+    </div>
+  </section>
+
+  <script src="../assets/js/firebase-config.js"></script>
+  <script src="../assets/js/pelanggan.js"></script>
+</body>
+</html>
