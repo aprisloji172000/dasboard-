@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | Warung Cak Kapit</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+  <header class="header-hero">
+    <div class="container">
+      <a href="../" class="btn btn-outline" style="margin-bottom:1rem;">← Kembali</a>
+      <h1>Dashboard Admin</h1>
+      <p>Melihat pesanan realtime, ubah status warung, dan tandai pesanan selesai.</p>
+    </div>
+  </header>
+
+  <main class="container section grid-2">
+    <section class="card">
+      <h3>Kontrol Status Warung</h3>
+      <p class="muted">Mode <b>otomatis</b> mengikuti jam 17:00 - 00:00. Mode <b>habis</b> paksa tutup.</p>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <button id="setAuto" class="btn btn-outline">Mode Otomatis</button>
+        <button id="setHabis" class="btn btn-danger">Set Habis / Tutup</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>Ringkasan Hari Ini</h3>
+      <p id="totalOrder">Total pesanan: 0</p>
+      <p id="pendingOrder">Menunggu: 0</p>
+      <p id="omzet">Omzet: Rp0</p>
+    </section>
+  </main>
+
+  <section class="container section">
+    <div class="card">
+      <h3>Daftar Pesanan Masuk</h3>
+      <div style="overflow:auto;">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Waktu</th>
+              <th>Pelanggan</th>
+              <th>Detail</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <script src="../assets/js/firebase-config.js"></script>
+  <script src="../assets/js/admin.js"></script>
+</body>
+</html>
